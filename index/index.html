@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flat Asset Management System</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.7s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scale-on-hover:hover {
+      transform: scale(1.02);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .animate-row {
+      animation: rowFadeIn 0.5s ease forwards;
+    }
+
+    @keyframes rowFadeIn {
+      from {opacity: 0; transform: translateX(-10px);}
+      to {opacity: 1; transform: translateX(0);}
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-white to-blue-100 text-gray-800">
+  <div class="container mt-5 fade-in">
+    <h2 class="text-center text-4xl font-extrabold mb-6 text-blue-700">📦 Asset Management Dashboard</h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="rounded-xl bg-blue-500 text-white text-center p-4 scale-on-hover">
+          <h5 class="text-lg">Total</h5>
+          <p id="totalAssets" class="text-3xl font-bold">0</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="rounded-xl bg-green-500 text-white text-center p-4 scale-on-hover">
+          <h5 class="text-lg">Available</h5>
+          <p id="availableAssets" class="text-3xl font-bold">0</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="rounded-xl bg-yellow-400 text-gray-900 text-center p-4 scale-on-hover">
+          <h5 class="text-lg">Assigned</h5>
+          <p id="assignedAssets" class="text-3xl font-bold">0</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="rounded-xl bg-red-500 text-white text-center p-4 scale-on-hover">
+          <h5 class="text-lg">Damaged</h5>
+          <p id="damagedAssets" class="text-3xl font-bold">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Asset Form -->
+    <div class="p-4 rounded-xl bg-white border border-gray-200 mb-4 fade-in scale-on-hover">
+      <h4 class="mb-3 text-blue-600 font-bold">Add Asset Stock</h4>
+      <form id="assetForm" class="row g-3">
+        <div class="col-md-4">
+          <select class="form-select" id="assetType" required>
+            <option value="">Select Asset Type</option>
+            <option>Laptop</option>
+            <option>Webcam</option>
+            <option>CPU</option>
+            <option>Monitor</option>
+            <option>Mouse</option>
+            <option>Keyboard</option>
+            <option>macOS</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" id="assetBrand">
+            <option>Dell</option>
+            <option>HP</option>
+            <option>Lenovo</option>
+            <option>Apple</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Serial/IMEI Number" id="serialNumber" required>
+        </div>
+
+        <!-- Configurations -->
+        <div class="col-md-6 dynamic-fields" id="configFields" style="display: none;">
+          <label for="configuration">Configuration</label>
+          <select class="form-select" id="configuration">
+            <option>i3</option><option>i5</option><option>i7</option><option>i9</option>
+          </select>
+        </div>
+        <div class="col-md-6 dynamic-fields" id="storageFields" style="display: none;">
+          <label for="storage">Storage</label>
+          <select class="form-select" id="storage">
+            <option>256GB</option><option>512GB</option><option>1TB</option>
+          </select>
+        </div>
+
+        <!-- Webcam -->
+        <div class="col-md-4 dynamic-fields" id="webcamResolutionField" style="display: none;">
+          <label>Resolution</label>
+          <select class="form-select" id="webcamResolution">
+            <option>720p</option><option>1080p</option><option>4K</option>
+          </select>
+        </div>
+        <div class="col-md-4 dynamic-fields" id="webcamFramerateField" style="display: none;">
+          <label>Frame Rate</label>
+          <select class="form-select" id="webcamFramerate">
+            <option>30fps</option><option>60fps</option>
+          </select>
+        </div>
+        <div class="col-md-4 dynamic-fields" id="webcamTypeField" style="display: none;">
+          <label>Webcam Type</label>
+          <select class="form-select" id="webcamType">
+            <option>Built-in</option><option>USB</option><option>Professional</option><option>Wired</option><option>Wireless</option>
+          </select>
+        </div>
+
+        <div class="col-12 text-end">
+          <button type="submit" class="btn btn-success px-4 py-2 transition-all duration-300 hover:scale-105">Add</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Assign Form -->
+    <div class="p-4 rounded-xl bg-white border border-gray-200 mb-4 fade-in scale-on-hover">
+      <h4 class="mb-3 text-green-600 font-bold">Assign Asset</h4>
+      <form id="assignForm" class="row g-3">
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Developer Name" id="developerName" required />
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Developer ID" id="developerId" required />
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Serial Number" id="assignSerial" required />
+        </div>
+        <div class="col-12 text-end">
+          <button type="submit" class="btn btn-primary px-4 py-2 hover:scale-105 transition-all">Assign</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Return Form -->
+    <div class="p-4 rounded-xl bg-white border border-gray-200 mb-4 fade-in scale-on-hover">
+      <h4 class="mb-3 text-red-600 font-bold">Return Asset</h4>
+      <form id="returnForm" class="row g-3">
+        <div class="col-md-6">
+          <input type="text" class="form-control" placeholder="Developer Name or ID" id="returnIdentifier" required />
+        </div>
+        <div class="col-md-6 text-end">
+          <button type="submit" class="btn btn-danger px-4 py-2 hover:scale-105 transition-all">Return</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Search Form -->
+    <div class="p-4 rounded-xl bg-white border border-gray-200 mb-4 fade-in scale-on-hover">
+      <h4 class="mb-3 text-indigo-600 font-bold">Search Asset</h4>
+      <form id="searchForm" class="row g-3">
+        <div class="col-md-10">
+          <input type="text" class="form-control" placeholder="Search by Serial or Name/ID" id="searchInput" required />
+        </div>
+        <div class="col-md-2 text-end">
+          <button type="submit" class="btn btn-info px-4 py-2 hover:scale-105 transition-all">Search</button>
+        </div>
+      </form>
+      <div id="searchResult" class="mt-3"></div>
+    </div>
+
+    <!-- Assigned Table -->
+    <div class="p-4 rounded-xl bg-white border border-gray-200 fade-in">
+      <h4 class="mb-3 text-dark font-bold">Assigned Assets</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th><th>Dev Name</th><th>Dev ID</th><th>Type</th><th>Brand</th><th>Serial</th><th>Config</th><th>Damaged</th><th>In Use</th>
+            </tr>
+          </thead>
+          <tbody id="assignmentTable">
+            <tr class="animate-row">
+              <td>1</td><td>Uday</td><td>DEV001</td><td>Laptop</td><td>HP</td><td>SN9001</td><td>i5/512GB</td><td>No</td><td>Yes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("assetType").addEventListener("change", function () {
+      const type = this.value;
+      document.querySelectorAll('.dynamic-fields').forEach(f => f.style.display = 'none');
+
+      if (["Laptop", "CPU", "macOS"].includes(type)) {
+        document.getElementById("configFields").style.display = 'block';
+        document.getElementById("storageFields").style.display = 'block';
+      }
+      if (type === "Webcam") {
+        document.getElementById("webcamResolutionField").style.display = 'block';
+        document.getElementById("webcamFramerateField").style.display = 'block';
+        document.getElementById("webcamTypeField").style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
