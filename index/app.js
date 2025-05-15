@@ -1,5 +1,12 @@
 let assets = [];
 let assignments = [];
+let userSettings = {
+  name: "",
+  email: "",
+  notifyAssign: false,
+  notifyReturn: false,
+  notifyDamage: false
+};
 
 document.getElementById("assetForm").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -10,10 +17,10 @@ document.getElementById("assetForm").addEventListener("submit", function (e) {
     serial: document.getElementById("serialNumber").value.trim(),
     config: document.getElementById("configuration").value,
     storage: document.getElementById("storage").value,
-    damaged: "No", // Removed damage dropdown, default to "No"
-    resolution: type === "Webcam" ? document.getElementById("resolution").value : "",
-    framerate: type === "Webcam" ? document.getElementById("framerate").value : "",
-    camType: type === "Webcam" ? document.getElementById("webcamCategory").value : "",
+    damaged: "No",
+    resolution: type === "Webcam" ? document.getElementById("webcamResolution").value : "",
+    framerate: type === "Webcam" ? document.getElementById("webcamFramerate").value : "",
+    camType: type === "Webcam" ? document.getElementById("webcamType").value : "",
     assigned: false
   };
   assets.push(asset);
@@ -31,12 +38,17 @@ document.getElementById("assignForm").addEventListener("submit", function (e) {
   const developer = {
     name: document.getElementById("developerName").value,
     id: document.getElementById("developerId").value,
-    asset: asset
+    asset
   };
   asset.assigned = true;
   assignments.push(developer);
   updateAssignmentTable();
   updateSummary();
+
+  if (userSettings.notifyAssign) {
+    alert("📧 Email notification: Asset assigned to developer.");
+  }
+
   this.reset();
 });
 
@@ -50,6 +62,11 @@ document.getElementById("returnForm").addEventListener("submit", function (e) {
   assignments.splice(index, 1);
   updateAssignmentTable();
   updateSummary();
+
+  if (userSettings.notifyReturn) {
+    alert("📧 Email notification: Asset returned.");
+  }
+
   alert("Asset returned successfully.");
   this.reset();
 });
@@ -107,4 +124,26 @@ function updateSummary() {
   document.getElementById("availableAssets").innerText = assets.filter(a => !a.assigned).length;
   document.getElementById("assignedAssets").innerText = assets.filter(a => a.assigned).length;
   document.getElementById("damagedAssets").innerText = assets.filter(a => a.damaged === "Yes").length;
+}
+
+// Settings Save
+document.getElementById("settingsForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  userSettings.name = document.getElementById("settingName").value.trim();
+  userSettings.email = document.getElementById("settingEmail").value.trim();
+  userSettings.notifyAssign = document.getElementById("notifyAssign").checked;
+  userSettings.notifyReturn = document.getElementById("notifyReturn").checked;
+  userSettings.notifyDamage = document.getElementById("notifyDamage").checked;
+  alert("✅ Settings saved successfully!");
+});
+
+// Dummy Logout
+function logout() {
+  alert("🔒 Logged out successfully!");
+  location.reload(); // optional: simulate logout by reloading
+}
+
+// Dummy Change Password
+function changePassword() {
+  alert("🔑 Change password feature is not implemented in this prototype.");
 }
